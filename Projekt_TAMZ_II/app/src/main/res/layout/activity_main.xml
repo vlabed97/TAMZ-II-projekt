@@ -10,61 +10,42 @@
         android:id="@+id/sokoView"
         android:layout_width="410dp"
         android:layout_height="410dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/buttonSpell3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="Spell 3"
-        app:layout_constraintStart_toEndOf="@+id/buttonSpell2"
-        app:layout_constraintTop_toBottomOf="@+id/sokoView" />
-
-    <Button
-        android:id="@+id/buttonSpell1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:text="Spell 1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sokoView" />
-
-    <Button
-        android:id="@+id/buttonSpell2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="Spell 2"
-        app:layout_constraintStart_toEndOf="@+id/buttonSpell1"
-        app:layout_constraintTop_toBottomOf="@+id/sokoView" />
-
-    <Button
-        android:id="@+id/buttonSpell4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="Spell 4"
-        app:layout_constraintStart_toEndOf="@+id/buttonSpell3"
-        app:layout_constraintTop_toBottomOf="@+id/sokoView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
         android:id="@+id/buttonDown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="56dp"
+        android:background="@color/color_1"
         android:onClick="moveDown"
         android:text="Down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buttonLeft" />
 
     <Button
+        android:id="@+id/buttonUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="160dp"
+        android:background="@color/color_1"
+        android:onClick="moveUp"
+        android:text="Up"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDown"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSpell1"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
         android:id="@+id/buttonRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="56dp"
+        android:background="@color/color_1"
         android:onClick="moveRight"
         android:text="Right"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -75,20 +56,71 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="56dp"
+        android:background="@color/color_1"
         android:onClick="moveLeft"
         android:text="Left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonUp"
+        android:id="@+id/buttonSpell1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:onClick="moveUp"
-        android:text="Up"
-        app:layout_constraintBottom_toTopOf="@+id/buttonDown"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginStart="32dp"
+        android:background="@color/color_1"
+        android:onClick="selectedSpell_1"
+        android:text="Spell 1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sokoView" />
+
+    <Button
+        android:id="@+id/buttonSpell2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/color_2"
+        android:onClick="selectedSpell_2"
+        android:text="Spell 2"
+        app:layout_constraintStart_toEndOf="@+id/buttonSpell1"
+        app:layout_constraintTop_toBottomOf="@+id/sokoView" />
+
+    <Button
+        android:id="@+id/buttonSpell3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/color_2"
+        android:onClick="selectedSpell_3"
+        android:text="Spell 3"
+        app:layout_constraintStart_toEndOf="@+id/buttonSpell2"
+        app:layout_constraintTop_toBottomOf="@+id/sokoView" />
+
+    <Button
+        android:id="@+id/buttonSpell4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/color_2"
+        android:onClick="selectedSpell_4"
+        android:text="Spell 4"
+        app:layout_constraintStart_toEndOf="@+id/buttonSpell3"
+        app:layout_constraintTop_toBottomOf="@+id/sokoView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Turn: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textTurn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -28,6 +29,8 @@ public class SokoView extends View{
     final static int HERO = 4;
     final static int ENEMY = 6;
     final static int MINION = 7;
+    final static int SELECTED = 8;
+    final static int EMPTY = 9;
 
     public static int level[] = {
             1,1,1,1,1,1,1,1,1,1,
@@ -41,6 +44,24 @@ public class SokoView extends View{
             1,0,0,0,0,0,6,0,0,1,
             1,1,1,1,1,1,1,1,1,1
     };
+
+    public static int specialEffectsLayer[] = {
+            9,9,9,9,9,9,9,9,9,9,
+            9,9,9,9,9,9,9,9,9,9,
+            9,9,9,9,9,9,9,9,9,9,
+            9,9,9,9,9,9,9,9,9,9,
+            9,9,9,9,9,9,9,9,9,9,
+            9,9,9,9,9,9,9,9,9,9,
+            9,9,9,9,9,9,9,9,9,9,
+            9,9,9,9,9,9,9,9,9,9,
+            9,9,9,9,9,9,9,9,9,9,
+            9,9,9,9,9,9,9,9,9,9
+    };
+
+    public int getClickedPosition(int x, int y){
+        int cellWidth = this.getMeasuredWidth() / lx;
+        return (y / cellWidth)*lx + (x / cellWidth);
+    }
 
     public SokoView(Context context) {
         super(context);
@@ -58,7 +79,7 @@ public class SokoView extends View{
     }
 
     void init(Context context) {
-        bmp = new Bitmap[8];
+        bmp = new Bitmap[10];
         bmp[0] = BitmapFactory.decodeResource(getResources(), R.drawable.grass_1);
         bmp[1] = BitmapFactory.decodeResource(getResources(), R.drawable.grass_3);
         bmp[2] = BitmapFactory.decodeResource(getResources(), R.drawable.box);
@@ -67,6 +88,8 @@ public class SokoView extends View{
         bmp[5] = BitmapFactory.decodeResource(getResources(), R.drawable.boxok);
         bmp[6] = BitmapFactory.decodeResource(getResources(), R.drawable.fox32px);
         bmp[7] = BitmapFactory.decodeResource(getResources(), R.drawable.minion32px);
+        bmp[8] = BitmapFactory.decodeResource(getResources(), R.drawable.selected_area);
+        bmp[9] = BitmapFactory.decodeResource(getResources(), R.drawable.empty_alpha);
     }
 
     @Override
@@ -81,9 +104,11 @@ public class SokoView extends View{
 
         for (int i = 0; i < lx; i++) {
             for (int j = 0; j < ly; j++) {
-                canvas.drawBitmap(bmp[0], null,
+                canvas.drawBitmap(bmp[GRASS], null,
                         new Rect(j*width, i*height,(j+1)*width, (i+1)*height), null);
                 canvas.drawBitmap(bmp[level[i*10 + j]], null,
+                        new Rect(j*width, i*height,(j+1)*width, (i+1)*height), null);
+                canvas.drawBitmap(bmp[specialEffectsLayer[i*10 + j]], null,
                         new Rect(j*width, i*height,(j+1)*width, (i+1)*height), null);
             }
         }
