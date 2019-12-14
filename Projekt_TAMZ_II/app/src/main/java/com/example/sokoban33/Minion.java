@@ -17,6 +17,7 @@ public class Minion extends Enemy {
         ArrayList heroesInRange = getMeleRange(loadHeroes(creatures));
         if (heroesInRange.size() == 0){
             Log.i("mojLog", "no heroe to attack");
+            moveToPlayer(creatures);
         }
         else{
             Hero heroToAttack = getLessHpHero(heroesInRange);

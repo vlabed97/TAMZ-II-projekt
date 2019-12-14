@@ -31,14 +31,15 @@ public class SokoView extends View{
     final static int MINION = 7;
     final static int SELECTED = 8;
     final static int EMPTY = 9;
+    final static int CAROTTY = 10;
 
     public static int level[] = {
             1,1,1,1,1,1,1,1,1,1,
             1,0,0,0,0,0,0,0,0,1,
-            1,0,0,0,7,0,0,0,0,1,
+            1,0,0,0,7,0,2,10,0,1,
+            1,0,1,3,0,0,2,2,2,1,
+            1,0,2,3,0,0,0,0,0,1,
             1,0,1,3,0,0,2,0,0,1,
-            1,0,2,3,3,2,0,0,0,1,
-            1,0,1,3,2,3,2,0,0,1,
             1,0,0,0,0,2,1,0,0,1,
             1,0,0,4,0,0,0,0,0,1,
             1,0,0,0,0,0,6,0,0,1,
@@ -79,7 +80,7 @@ public class SokoView extends View{
     }
 
     void init(Context context) {
-        bmp = new Bitmap[10];
+        bmp = new Bitmap[11];
         bmp[0] = BitmapFactory.decodeResource(getResources(), R.drawable.grass_1);
         bmp[1] = BitmapFactory.decodeResource(getResources(), R.drawable.grass_3);
         bmp[2] = BitmapFactory.decodeResource(getResources(), R.drawable.box);
@@ -90,6 +91,7 @@ public class SokoView extends View{
         bmp[7] = BitmapFactory.decodeResource(getResources(), R.drawable.minion32px);
         bmp[8] = BitmapFactory.decodeResource(getResources(), R.drawable.selected_area);
         bmp[9] = BitmapFactory.decodeResource(getResources(), R.drawable.empty_alpha);
+        bmp[10] = BitmapFactory.decodeResource(getResources(), R.drawable.carotty);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class Creature {
 
     protected String name;
 
-    protected ArrayList<String> spells;
+    protected ArrayList<Spell> spells;
 
     protected final Handler handler;
 

@@ -1,6 +1,8 @@
 package com.example.sokoban33;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private int selectedSpell;
     private Button spell_1_button;
     private Button spell_2_button;
-    private Button spell_3_button;
-    private Button spell_4_button;
+    private GameLoader gameLoader;
+    private int actualMapId = 0;
 
 
     private void turnCounter(){
@@ -43,9 +45,17 @@ public class MainActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Enemy enemy = (Enemy) creatures.get(turnNumber);
-                    enemy.move(creatures); // do something
-                    turnCounter(); // pass turn to player
+                    try{
+                        Enemy enemy = (Enemy) creatures.get(turnNumber);
+                        enemy.move(creatures); // do something
+                        turnCounter(); // pass turn to player
+                    }
+                    catch (IndexOutOfBoundsException e){
+                        Log.i("mojLog", "MINIONS is dead");
+                    }
+                    catch (ClassCastException e){
+                        Log.i("mojLog", "Unknown error.. to be solved");
+                    }
                 }
             }, 1500);
             Log.i("mojLog", "MINIONS TURN END");
@@ -75,28 +85,60 @@ public class MainActivity extends AppCompatActivity {
 
     private void initSpells(){
         if (creatures.get(turnNumber).spells.size() > 0) {
-            spell_1_button.setText(creatures.get(turnNumber).spells.get(0));
+            spell_1_button.setText(creatures.get(turnNumber).spells.get(0).name);
         }
         else{
             spell_1_button.setText("no spell");
         }
         if (creatures.get(turnNumber).spells.size() > 1) {
-            spell_2_button.setText(creatures.get(turnNumber).spells.get(1));
+            spell_2_button.setText(creatures.get(turnNumber).spells.get(1).name);
         }
         else{
             spell_2_button.setText("no spell");
         }
-        if (creatures.get(turnNumber).spells.size() > 2) {
-            spell_3_button.setText(creatures.get(turnNumber).spells.get(2));
+    }
+
+    private void setupNewGame(){
+        SokoView.level = gameLoader.getMap(this.actualMapId);
+        selectedSpell = 0;
+        turnNumber = 0;
+        creatures = new ArrayList<>();
+        creatures.add(new Mage(SokoView.HERO, "Bunny", sokoView));
+        creatures.add(new Warrior(SokoView.ENEMY, "Fox", sokoView));
+        creatures.add(new Minion(SokoView.MINION, "Minion", creatures, sokoView));
+        initSpells();
+    }
+
+    private void victory(){
+        boolean isWin = true;
+        for(Creature creature: creatures){
+            if(creature.name == "Minion"){
+                isWin = false;
+            }
         }
-        else{
-            spell_3_button.setText("no spell");
+        if(isWin){
+            actualMapId++;
+            if(actualMapId == 3){
+                Intent intent = new Intent(this, WinScreenActivity.class);
+                startActivity(intent);
+            }
+            else{
+                try{
+                    SokoView.level = gameLoader.getMap(this.actualMapId);
+                    setupNewGame();
+                }
+                catch(Exception e){
+                    /*Intent intent = new Intent(this, WinScreenActivity.class);
+                    startActivity(intent);*/
+                }
+            }
         }
-        if (creatures.get(turnNumber).spells.size() > 3) {
-            spell_4_button.setText(creatures.get(turnNumber).spells.get(3));
-        }
-        else{
-            spell_4_button.setText("no spell");
+    }
+
+    private void lose(){
+        if(creatures.size() < 3){
+            Intent intent = new Intent(this, MenuActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -104,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
         turnCounter();
         responseToPlayer();
         removeDeadCreatures();
+        victory();
+        // lose();
     }
 
     @Override
@@ -113,26 +157,46 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        selectedSpell = 0;
+        gameLoader = new GameLoader(MainActivity.this);
 
         spell_1_button = findViewById(R.id.buttonSpell1);
         spell_2_button = findViewById(R.id.buttonSpell2);
-        spell_3_button = findViewById(R.id.buttonSpell3);
-        spell_4_button = findViewById(R.id.buttonSpell4);
 
         sokoView = findViewById(R.id.sokoView);
         sokoView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                if (event.getAction() == MotionEvent.ACTION_DOWN
+                        && creatures.get(turnNumber).getClass() != Minion.class){
                     int x = (int) event.getX();
                     int y = (int) event.getY();
                     Creature creature = getCreatureOnPosition(sokoView.getClickedPosition(x, y));
+                    MediaPlayer click = MediaPlayer.create(v.getContext(), R.raw.click);
+                    MediaPlayer swing = MediaPlayer.create(v.getContext(), R.raw.swing);
                     if (creature != null){
                         Creature caster = creatures.get(turnNumber);
-                        if (caster.spells.get(selectedSpell) == "Fireball"){
+                        if (caster.spells.get(selectedSpell).name == "Comet"){
                             Mage mage = (Mage)caster;
-                            mage.fireball(creature);
+                            mage.comet(creature);
+                            swing.start();
                         }
+                        else if (caster.spells.get(selectedSpell).name == "Stab"){
+                            Mage mage = (Mage)caster;
+                            mage.stab(creature);
+                            swing.start();
+                        }
+                        else if (caster.spells.get(selectedSpell).name == "Slash"){
+                            Warrior warrior = (Warrior) caster;
+                            warrior.slash(creature);
+                            swing.start();
+                        }
+                        else if (caster.spells.get(selectedSpell).name == "Heroic strike"){
+                            Warrior warrior = (Warrior) caster;
+                            warrior.heroicStrike(creature);
+                            swing.start();
+                        }
+                    }
+                    else{
+                        click.start();
                     }
                     initMove();
                 }
@@ -140,81 +204,70 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        turnNumber = 0;
-
-        creatures = new ArrayList<>();
-        creatures.add(new Mage(SokoView.HERO, "Bunny", sokoView));
-        creatures.add(new Hero(SokoView.ENEMY, "Fox", sokoView));
-        creatures.add(new Minion(SokoView.MINION, "Minion", creatures, sokoView));
-
-        initSpells();
+        setupNewGame();
     }
 
     public void selectedSpell_1(View view){
         selectedSpell = 0;
-        spell_1_button.setBackgroundColor(getResources().getColor(R.color.color_1));
-        spell_2_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-        spell_3_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-        spell_4_button.setBackgroundColor(getResources().getColor(R.color.color_2));
+        spell_1_button.setBackground(getResources().getDrawable(R.drawable.spell_slot_selected));
+        spell_2_button.setBackground(getResources().getDrawable(R.drawable.spell_slot));
+        MediaPlayer click = MediaPlayer.create(view.getContext(), R.raw.click);
+        click.start();
     }
 
     public void selectedSpell_2(View view){
         selectedSpell = 1;
-        spell_1_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-        spell_2_button.setBackgroundColor(getResources().getColor(R.color.color_1));
-        spell_3_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-        spell_4_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-    }
-
-    public void selectedSpell_3(View view){
-        selectedSpell = 2;
-        spell_1_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-        spell_2_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-        spell_3_button.setBackgroundColor(getResources().getColor(R.color.color_1));
-        spell_4_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-    }
-
-    public void selectedSpell_4(View view){
-        selectedSpell = 3;
-        spell_1_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-        spell_2_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-        spell_3_button.setBackgroundColor(getResources().getColor(R.color.color_2));
-        spell_4_button.setBackgroundColor(getResources().getColor(R.color.color_1));
+        spell_1_button.setBackground(getResources().getDrawable(R.drawable.spell_slot));
+        spell_2_button.setBackground(getResources().getDrawable(R.drawable.spell_slot_selected));
+        MediaPlayer click = MediaPlayer.create(view.getContext(), R.raw.click);
+        click.start();
     }
 
     public void moveLeft(View view){
         if (creatures.get(turnNumber).getClass() == Hero.class
-                || creatures.get(turnNumber).getClass() == Mage.class){
+                || creatures.get(turnNumber).getClass() == Mage.class
+                || creatures.get(turnNumber).getClass() == Warrior.class){
             Hero hero = (Hero) creatures.get(turnNumber);
             hero.moveLeft();
             initMove();
+            MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
+            step.start();
         }
     }
 
     public void moveRight(View view){
         if (creatures.get(turnNumber).getClass() == Hero.class
-                || creatures.get(turnNumber).getClass() == Mage.class) {
+                || creatures.get(turnNumber).getClass() == Mage.class
+                || creatures.get(turnNumber).getClass() == Warrior.class) {
             Hero hero = (Hero)creatures.get(turnNumber);
             hero.moveRight();
             initMove();
+            MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
+            step.start();
         }
     }
 
     public void moveUp(View view){
         if (creatures.get(turnNumber).getClass() == Hero.class
-                || creatures.get(turnNumber).getClass() == Mage.class) {
+                || creatures.get(turnNumber).getClass() == Mage.class
+                || creatures.get(turnNumber).getClass() == Warrior.class) {
             Hero hero = (Hero)creatures.get(turnNumber);
             hero.moveUp();
             initMove();
+            MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
+            step.start();
         }
     }
 
     public void moveDown(View view){
         if (creatures.get(turnNumber).getClass() == Hero.class
-                || creatures.get(turnNumber).getClass() == Mage.class) {
+                || creatures.get(turnNumber).getClass() == Mage.class
+                || creatures.get(turnNumber).getClass() == Warrior.class) {
             Hero hero = (Hero)creatures.get(turnNumber);
             hero.moveDown();
             initMove();
+            MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
+            step.start();
         }
     }
 }

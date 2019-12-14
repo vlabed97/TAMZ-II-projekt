@@ -56,5 +56,21 @@ public class Enemy extends Creature {
         return lessHpHero;
     }
 
+    protected void moveToPlayer(ArrayList<Creature> creatures){
+        Hero target = getLessHpHero(loadHeroes(creatures));
+        if(target.position > this.position + SokoView.lx){
+            moveDown();
+        }
+        else if(target.position < this.position - SokoView.lx){
+            moveUp();
+        }
+        else if(target.position < this.position){
+            moveLeft();
+        }
+        else if(target.position > this.position){
+            moveRight();
+        }
+    }
+
     public void move(ArrayList<Creature> creatures){}
 }

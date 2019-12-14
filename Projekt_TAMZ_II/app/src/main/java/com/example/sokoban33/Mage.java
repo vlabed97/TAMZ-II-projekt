@@ -9,16 +9,27 @@ public class Mage extends Hero {
     private final int MAX_MANA = 100;
     private int mana = 100;
 
-    private final int FIREBALL_COST = 50;
+    private final int FIREBALL_COST = 10;
 
     public Mage(int heroIcon, String name, View gameView){
         super(heroIcon, name, gameView);
-        spells.add("Fireball");
+        spells.add(new Spell("Comet", R.drawable.comet));
+        spells.add(new Spell("Stab", R.drawable.comet));
     }
 
-    public void fireball(Creature creature){
+    public void comet(Creature creature){
         if (mana >= FIREBALL_COST){
             creature.takeDamage(20);
+            mana -= FIREBALL_COST;
+        }
+    }
+
+    public void stab(Creature creature){
+        if(creature.position == this.position - 1
+                || creature.position == this.position + 1
+                || creature.position == this.position - SokoView.lx
+                || creature.position == this.position + SokoView.lx){
+            creature.takeDamage(8);
         }
     }
 }
