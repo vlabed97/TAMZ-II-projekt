@@ -18,6 +18,7 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
         SoundPlayer soundPlayer = new SoundPlayer(this);
         soundPlayer.playSound(R.raw.song);
+        // Commet commet = new Commet(10, 10, 40, 50);
     }
 
     public void continueCampain(View view){

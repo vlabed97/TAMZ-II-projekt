@@ -7,7 +7,7 @@ public class Mage extends Hero {
     private int hp = 80;
 
     private final int MAX_MANA = 100;
-    private int mana = 100;
+    public int mana = 100;
 
     private final int FIREBALL_COST = 10;
 

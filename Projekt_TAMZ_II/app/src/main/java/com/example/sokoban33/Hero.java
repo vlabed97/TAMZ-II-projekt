@@ -18,7 +18,7 @@ public class Hero extends Creature {
             @Override
             public void run() {
                 GameView.specialEffectsLayer[position] = GameView.EMPTY;
-                gameView.invalidate();
+                // gameView.invalidate();
             }
         }, 500);
 

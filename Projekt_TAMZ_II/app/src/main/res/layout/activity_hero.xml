@@ -82,4 +82,5 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/editTextHeroName"
         app:layout_constraintStart_toEndOf="@+id/editTextHeroName" />
+
 </android.support.constraint.ConstraintLayout>

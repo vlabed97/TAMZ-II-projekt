@@ -1,11 +1,14 @@
 package com.example.sokoban33;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
 
 public class Creature {
+    public int positionX;
+    public int positionY;
     protected int position;
     protected int heroIcon;
 
@@ -40,6 +43,8 @@ public class Creature {
         spells = new ArrayList<>();
         handler = new Handler();
         this.gameView = gameView;
+        positionX = (position%GameView.lx) * (1128/GameView.lx);
+        positionY = (position/GameView.lx) * (1128/GameView.lx);
     }
 
     public void takeDamage(int dmg){
@@ -50,7 +55,7 @@ public class Creature {
             @Override
             public void run() {
                 GameView.specialEffectsLayer[position] = GameView.EMPTY;
-                gameView.invalidate();
+                // gameView.invalidate();
             }
         }, 500);
 
@@ -73,6 +78,7 @@ public class Creature {
         if (MapGuide.isFree(MapGuide.LEFT, position)) {
             GameView.level[position] = GameView.GRASS;
             position--;
+            positionX = (this.position%GameView.lx) * (gameView.getWidth()/GameView.lx);
             GameView.level[position] = heroIcon;
         }
     }
@@ -81,6 +87,7 @@ public class Creature {
         if (MapGuide.isFree(MapGuide.RIGHT, position)) {
             GameView.level[position] = GameView.GRASS;
             position++;
+            positionX = (this.position%GameView.lx) * (gameView.getWidth()/GameView.lx);
             GameView.level[position] = heroIcon;
         }
     }
@@ -89,6 +96,7 @@ public class Creature {
         if (MapGuide.isFree(MapGuide.UP, position)) {
             GameView.level[position] = GameView.GRASS;
             position -= GameView.lx;
+            positionY = (this.position/GameView.lx) * (gameView.getWidth()/GameView.lx);
             GameView.level[position] = heroIcon;
         }
     }
@@ -97,6 +105,7 @@ public class Creature {
         if (MapGuide.isFree(MapGuide.DOWN, position)) {
             GameView.level[position] = GameView.GRASS;
             position += GameView.lx;
+            positionY = (this.position/GameView.lx) * (gameView.getWidth()/GameView.lx);
             GameView.level[position] = heroIcon;
         }
     }

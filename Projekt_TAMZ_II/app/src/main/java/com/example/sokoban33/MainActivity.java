@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<Creature> creatures;
+    public static ArrayList<Creature> creatures;
     private GameView gameView;
     private int turnNumber;
     private int selectedSpell;
@@ -27,11 +27,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void turnCounter(){
-        gameView.invalidate(); // REDRAWS SCENE
+        // gameView.invalidate(); // REDRAWS SCENE
         turnNumber++;
         if (turnNumber >= creatures.size()){
             turnNumber = 0;
         }
+        selectCreature();
         TextView turnText = findViewById(R.id.textTurn);
         turnText.setText(creatures.get(turnNumber).name + " " + creatures.get(turnNumber).getHp() + "HP");
         initSpells();
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             creatures.add(new Warrior(GameView.ENEMY, "Fox", gameView));
         }
         creatures.add(new Minion(GameView.MINION, "Minion", creatures, gameView));
+        selectCreature();
         initSpells();
     }
 
@@ -136,6 +138,17 @@ public class MainActivity extends AppCompatActivity {
                 catch(Exception e){}
             }
         }
+    }
+
+    private void selectCreature(){
+        int i = 0;
+        for(int objectId: GameView.specialEffectsLayer){
+            if(objectId == 11){
+                GameView.specialEffectsLayer[i] = 9;
+            }
+            i++;
+        }
+        GameView.specialEffectsLayer[creatures.get(turnNumber).position] = 11;
     }
 
     private void initMove(){
@@ -173,6 +186,13 @@ public class MainActivity extends AppCompatActivity {
                         Creature caster = creatures.get(turnNumber);
                         if (caster.spells.get(selectedSpell).name == "Comet"){
                             Mage mage = (Mage)caster;
+                            GameView gameView = findViewById(R.id.sokoView);
+                            Log.i("mojLog", String.valueOf(gameView.getWidth()));
+                            GameView.commet.actualX = (mage.position%GameView.lx) * (gameView.getWidth()/GameView.lx);
+                            GameView.commet.actualY = (mage.position/GameView.lx) * (gameView.getWidth()/GameView.lx);
+                            GameView.commet.targetX = x - 30;
+                            GameView.commet.targetY = y - 30;
+                            GameView.commet.launch();
                             mage.comet(creature);
                             swing.start();
                         }

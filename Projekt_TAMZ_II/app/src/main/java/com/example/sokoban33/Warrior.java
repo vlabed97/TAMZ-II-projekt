@@ -7,7 +7,7 @@ public class Warrior extends Hero {
     private int hp = 100;
 
     private final int MAX_RAGE = 100;
-    private int rage = 100;
+    public int rage = 100;
 
     private final int HEROICSTRIKE_COST = 30;
 

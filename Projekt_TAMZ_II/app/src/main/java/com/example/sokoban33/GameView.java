@@ -4,10 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Debug;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.graphics.Color;
+
+import static java.lang.Math.round;
 
 /**
  * Created by kru13 on 12.10.16.
@@ -16,6 +21,7 @@ import android.view.View;
 public class GameView extends View{
 
     Bitmap[] bmp;
+    public static Commet commet;
 
     static int lx = 10;
     static int ly = 10;
@@ -64,23 +70,33 @@ public class GameView extends View{
         return (y / cellWidth)*lx + (x / cellWidth);
     }
 
-    public GameView(Context context) {
-        super(context);
-        init(context);
-    }
-
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
-    }
 
-    public GameView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
+        new Thread(new Runnable() {
+            public void run() {
+                final int DELAY = 50;
+                long previousTime = System.currentTimeMillis();
+                while(true){
+                    if(previousTime + DELAY < System.currentTimeMillis()){
+                        invalidate();
+                        previousTime = System.currentTimeMillis();
+                    }
+                }
+            }
+        }).start();
+
+        /*
+        commet.actualX = 10;
+        commet.actualY = 10;
+        commet.targetX = 200;
+        commet.targetY = 250;
+        commet.launch();*/
     }
 
     void init(Context context) {
-        bmp = new Bitmap[11];
+        bmp = new Bitmap[12];
         bmp[0] = BitmapFactory.decodeResource(getResources(), R.drawable.grass_1);
         bmp[1] = BitmapFactory.decodeResource(getResources(), R.drawable.grass_3);
         bmp[2] = BitmapFactory.decodeResource(getResources(), R.drawable.box);
@@ -92,6 +108,12 @@ public class GameView extends View{
         bmp[8] = BitmapFactory.decodeResource(getResources(), R.drawable.selected_area);
         bmp[9] = BitmapFactory.decodeResource(getResources(), R.drawable.empty_alpha);
         bmp[10] = BitmapFactory.decodeResource(getResources(), R.drawable.carotty);
+        bmp[11] = BitmapFactory.decodeResource(getResources(), R.drawable.selection);
+        Bitmap[] commetBitmap = new Bitmap[3];
+        commetBitmap[0] = BitmapFactory.decodeResource(getResources(), R.drawable.commet_0);
+        commetBitmap[1] = BitmapFactory.decodeResource(getResources(), R.drawable.commet_1);
+        commetBitmap[2] = BitmapFactory.decodeResource(getResources(), R.drawable.commet_2);
+        commet = new Commet(commetBitmap, bmp[9]);
     }
 
     @Override
@@ -115,5 +137,30 @@ public class GameView extends View{
             }
         }
 
+        canvas.drawBitmap(commet.actualFrame, null, new Rect(commet.actualX, commet.actualY, commet.actualX + 60, commet.actualY + 60), null);
+        Paint paintYellow = new Paint();
+        paintYellow.setColor(Color.YELLOW);
+        paintYellow.setStyle(Paint.Style.FILL);
+        paintYellow.setTextSize(30);
+        Paint paintBlue = new Paint();
+        paintBlue.setColor(Color.BLUE);
+        paintBlue.setStyle(Paint.Style.FILL);
+        paintBlue.setTextSize(30);
+        Paint paintRed = new Paint();
+        paintRed.setColor(Color.RED);
+        paintRed.setStyle(Paint.Style.FILL);
+        paintRed.setTextSize(30);
+        for(Creature creature: MainActivity.creatures){
+            canvas.drawText(creature.hp + " HP", creature.positionX, creature.positionY, paintRed);
+            if(creature.getClass() == Mage.class){
+                Mage mage = (Mage) creature;
+                canvas.drawText( mage.mana + " MP", creature.positionX, creature.positionY - 30, paintYellow);
+            }
+            else if(creature.getClass() == Warrior.class){
+                Warrior warrior = (Warrior)creature;
+                canvas.drawText( warrior.rage + " POWER", creature.positionX, creature.positionY - 30, paintYellow);
+            }
+
+        }
     }
 }
