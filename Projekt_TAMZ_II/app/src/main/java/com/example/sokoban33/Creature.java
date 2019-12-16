@@ -23,7 +23,7 @@ public class Creature {
 
     protected int getHeroPosition(){
         int i = 0;
-        for (int objNum: SokoView.level) {
+        for (int objNum: GameView.level) {
             if(objNum == heroIcon){
                 return i;
             }
@@ -44,12 +44,12 @@ public class Creature {
 
     public void takeDamage(int dmg){
         hp -= dmg;
-        SokoView.specialEffectsLayer[position] = SokoView.SELECTED;
+        GameView.specialEffectsLayer[position] = GameView.SELECTED;
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SokoView.specialEffectsLayer[position] = SokoView.EMPTY;
+                GameView.specialEffectsLayer[position] = GameView.EMPTY;
                 gameView.invalidate();
             }
         }, 500);
@@ -57,7 +57,7 @@ public class Creature {
         if (hp <= 0){
             dead = true;
             heroIcon = 5; // tady zmenit na ikonu lebky
-            SokoView.level[position] = heroIcon;
+            GameView.level[position] = heroIcon;
         }
     }
 
@@ -71,33 +71,33 @@ public class Creature {
 
     public void moveLeft(){
         if (MapGuide.isFree(MapGuide.LEFT, position)) {
-            SokoView.level[position] = SokoView.GRASS;
+            GameView.level[position] = GameView.GRASS;
             position--;
-            SokoView.level[position] = heroIcon;
+            GameView.level[position] = heroIcon;
         }
     }
 
     public void moveRight(){
         if (MapGuide.isFree(MapGuide.RIGHT, position)) {
-            SokoView.level[position] = SokoView.GRASS;
+            GameView.level[position] = GameView.GRASS;
             position++;
-            SokoView.level[position] = heroIcon;
+            GameView.level[position] = heroIcon;
         }
     }
 
     public void moveUp(){
         if (MapGuide.isFree(MapGuide.UP, position)) {
-            SokoView.level[position] = SokoView.GRASS;
-            position -= SokoView.lx;
-            SokoView.level[position] = heroIcon;
+            GameView.level[position] = GameView.GRASS;
+            position -= GameView.lx;
+            GameView.level[position] = heroIcon;
         }
     }
 
     public void moveDown(){
         if (MapGuide.isFree(MapGuide.DOWN, position)) {
-            SokoView.level[position] = SokoView.GRASS;
-            position += SokoView.lx;
-            SokoView.level[position] = heroIcon;
+            GameView.level[position] = GameView.GRASS;
+            position += GameView.lx;
+            GameView.level[position] = heroIcon;
         }
     }
 }

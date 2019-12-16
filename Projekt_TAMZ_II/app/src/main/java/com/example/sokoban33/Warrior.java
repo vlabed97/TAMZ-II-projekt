@@ -20,8 +20,8 @@ public class Warrior extends Hero {
     public void slash(Creature creature){
         if(creature.position == this.position - 1
                 || creature.position == this.position + 1
-                || creature.position == this.position - SokoView.lx
-                || creature.position == this.position + SokoView.lx) {
+                || creature.position == this.position - GameView.lx
+                || creature.position == this.position + GameView.lx) {
             creature.takeDamage(15);
         }
     }
@@ -30,8 +30,8 @@ public class Warrior extends Hero {
         if (rage >= HEROICSTRIKE_COST){
             if(creature.position == this.position - 1
                     || creature.position == this.position + 1
-                    || creature.position == this.position - SokoView.lx
-                    || creature.position == this.position + SokoView.lx){
+                    || creature.position == this.position - GameView.lx
+                    || creature.position == this.position + GameView.lx){
                 creature.takeDamage(30);
                 rage -= HEROICSTRIKE_COST;
             }

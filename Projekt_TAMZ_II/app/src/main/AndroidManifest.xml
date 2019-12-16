@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".WinScreenActivity"></activity>
+        <activity android:name=".ChooseLevelActivity"></activity>
+        <activity android:name=".HeroActivity" />
+        <activity android:name=".ScoreBoardActivity" />
+        <activity android:name=".WinScreenActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".MenuActivity">
             <intent-filter>

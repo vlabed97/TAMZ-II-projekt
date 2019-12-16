@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 public class MenuActivity extends AppCompatActivity {
 
+    private DatabaseHelper databaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +32,18 @@ public class MenuActivity extends AppCompatActivity {
         startActivity(homeIntent);
     }
 
-    public void winAct(View view){
-        Intent intent = new Intent(this, WinScreenActivity.class);
+    public void heroSettings(View view){
+        Intent intent = new Intent(this, HeroActivity.class);
+        startActivity(intent);
+    }
+
+    public void scoreBoardAct(View view){
+        Intent intent = new Intent(this, ScoreBoardActivity.class);
+        startActivity(intent);
+    }
+
+    public void chooseLevel(View view){
+        Intent intent = new Intent(this, ChooseLevelActivity.class);
         startActivity(intent);
     }
 }

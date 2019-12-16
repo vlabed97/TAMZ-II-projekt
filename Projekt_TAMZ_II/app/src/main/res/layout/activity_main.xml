@@ -7,7 +7,7 @@
     android:background="@color/colorPrimaryDark"
     tools:context=".MainActivity">
 
-    <com.example.sokoban33.SokoView
+    <com.example.sokoban33.GameView
         android:id="@+id/sokoView"
         android:layout_width="410dp"
         android:layout_height="410dp"

@@ -3,7 +3,6 @@ package com.example.sokoban33;
 import android.util.Log;
 import android.view.View;
 
-import java.time.chrono.HijrahEra;
 import java.util.ArrayList;
 
 public class Enemy extends Creature {
@@ -11,7 +10,8 @@ public class Enemy extends Creature {
     public ArrayList<Hero> loadHeroes(ArrayList<Creature> creatures){
         ArrayList<Hero> heroes = new ArrayList<>();
         for (Creature creature: creatures){
-            if (creature.getClass() == Hero.class || creature.getClass() == Mage.class){
+            if (creature.getClass() == Hero.class || creature.getClass() == Mage.class
+                    || creature.getClass() == Warrior.class){
                 heroes.add((Hero)creature);
                 Log.i("mojLog", creature.name);
             }
@@ -30,12 +30,12 @@ public class Enemy extends Creature {
             int heroPosition = hero.getPosition();
             if (heroPosition == this.position - 1
                 || heroPosition == this.position + 1
-                || heroPosition == this.position - SokoView.lx
-                || heroPosition == this.position + SokoView.lx
-                || heroPosition == this.position - SokoView.lx - 1
-                || heroPosition == this.position - SokoView.lx + 1
-                || heroPosition == this.position + SokoView.lx - 1
-                || heroPosition == this.position + SokoView.lx + 1){
+                || heroPosition == this.position - GameView.lx
+                || heroPosition == this.position + GameView.lx
+                || heroPosition == this.position - GameView.lx - 1
+                || heroPosition == this.position - GameView.lx + 1
+                || heroPosition == this.position + GameView.lx - 1
+                || heroPosition == this.position + GameView.lx + 1){
                 heroesInRange.add(hero);
             }
         }
@@ -58,10 +58,10 @@ public class Enemy extends Creature {
 
     protected void moveToPlayer(ArrayList<Creature> creatures){
         Hero target = getLessHpHero(loadHeroes(creatures));
-        if(target.position > this.position + SokoView.lx){
+        if(target.position > this.position + GameView.lx){
             moveDown();
         }
-        else if(target.position < this.position - SokoView.lx){
+        else if(target.position < this.position - GameView.lx){
             moveUp();
         }
         else if(target.position < this.position){

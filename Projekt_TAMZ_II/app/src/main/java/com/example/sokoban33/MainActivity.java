@@ -1,7 +1,7 @@
 package com.example.sokoban33;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Creature> creatures;
-    private SokoView sokoView;
+    private GameView gameView;
     private int turnNumber;
     private int selectedSpell;
     private Button spell_1_button;
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void turnCounter(){
-        sokoView.invalidate(); // REDRAWS SCENE
+        gameView.invalidate(); // REDRAWS SCENE
         turnNumber++;
         if (turnNumber >= creatures.size()){
             turnNumber = 0;
@@ -99,13 +99,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNewGame(){
-        SokoView.level = gameLoader.getMap(this.actualMapId);
+        GameView.level = gameLoader.getMap(this.actualMapId);
         selectedSpell = 0;
         turnNumber = 0;
         creatures = new ArrayList<>();
-        creatures.add(new Mage(SokoView.HERO, "Bunny", sokoView));
-        creatures.add(new Warrior(SokoView.ENEMY, "Fox", sokoView));
-        creatures.add(new Minion(SokoView.MINION, "Minion", creatures, sokoView));
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("HeroPref", 0);
+        String heroClass = pref.getString("class", null);
+        if(heroClass.equals("mage")){
+            creatures.add(new Mage(GameView.HERO, "Bunny", gameView));
+        }
+        else if(heroClass.equals("warrior")){
+            creatures.add(new Warrior(GameView.ENEMY, "Fox", gameView));
+        }
+        creatures.add(new Minion(GameView.MINION, "Minion", creatures, gameView));
         initSpells();
     }
 
@@ -124,21 +130,11 @@ public class MainActivity extends AppCompatActivity {
             }
             else{
                 try{
-                    SokoView.level = gameLoader.getMap(this.actualMapId);
+                    GameView.level = gameLoader.getMap(this.actualMapId);
                     setupNewGame();
                 }
-                catch(Exception e){
-                    /*Intent intent = new Intent(this, WinScreenActivity.class);
-                    startActivity(intent);*/
-                }
+                catch(Exception e){}
             }
-        }
-    }
-
-    private void lose(){
-        if(creatures.size() < 3){
-            Intent intent = new Intent(this, MenuActivity.class);
-            startActivity(intent);
         }
     }
 
@@ -147,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
         responseToPlayer();
         removeDeadCreatures();
         victory();
-        // lose();
     }
 
     @Override
@@ -157,19 +152,21 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
+        Intent intent = getIntent();
+        actualMapId = intent.getIntExtra("game_id", 0);
         gameLoader = new GameLoader(MainActivity.this);
 
         spell_1_button = findViewById(R.id.buttonSpell1);
         spell_2_button = findViewById(R.id.buttonSpell2);
+        gameView = findViewById(R.id.sokoView);
 
-        sokoView = findViewById(R.id.sokoView);
-        sokoView.setOnTouchListener(new View.OnTouchListener() {
+        gameView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN
                         && creatures.get(turnNumber).getClass() != Minion.class){
                     int x = (int) event.getX();
                     int y = (int) event.getY();
-                    Creature creature = getCreatureOnPosition(sokoView.getClickedPosition(x, y));
+                    Creature creature = getCreatureOnPosition(gameView.getClickedPosition(x, y));
                     MediaPlayer click = MediaPlayer.create(v.getContext(), R.raw.click);
                     MediaPlayer swing = MediaPlayer.create(v.getContext(), R.raw.swing);
                     if (creature != null){

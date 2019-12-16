@@ -27,8 +27,8 @@ public class Mage extends Hero {
     public void stab(Creature creature){
         if(creature.position == this.position - 1
                 || creature.position == this.position + 1
-                || creature.position == this.position - SokoView.lx
-                || creature.position == this.position + SokoView.lx){
+                || creature.position == this.position - GameView.lx
+                || creature.position == this.position + GameView.lx){
             creature.takeDamage(8);
         }
     }

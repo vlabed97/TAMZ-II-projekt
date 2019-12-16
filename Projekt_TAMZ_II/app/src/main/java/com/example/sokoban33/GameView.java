@@ -13,7 +13,7 @@ import android.view.View;
  * Created by kru13 on 12.10.16.
  */
 
-public class SokoView extends View{
+public class GameView extends View{
 
     Bitmap[] bmp;
 
@@ -64,17 +64,17 @@ public class SokoView extends View{
         return (y / cellWidth)*lx + (x / cellWidth);
     }
 
-    public SokoView(Context context) {
+    public GameView(Context context) {
         super(context);
         init(context);
     }
 
-    public SokoView(Context context, AttributeSet attrs) {
+    public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public SokoView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GameView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }

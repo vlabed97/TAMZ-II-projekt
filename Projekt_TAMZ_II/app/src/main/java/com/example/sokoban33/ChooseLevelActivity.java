@@ -1,0 +1,40 @@
+package com.example.sokoban33;
+
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+public class ChooseLevelActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_choose_level);
+        GameLoader gameLoader = new GameLoader(this);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, gameLoader.getAllMaps());
+        ListView listViewScore = findViewById(R.id.mapList);
+        listViewScore.setAdapter(arrayAdapter);
+        listViewScore.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getApplicationContext(), "Item: " + i + " clicked", Toast.LENGTH_LONG).show();
+                startGame(i);
+            }
+        });
+    }
+
+    private void startGame(int gameId){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("game_id", gameId);
+        startActivity(intent);
+    }
+}

@@ -1,11 +1,7 @@
 package com.example.sokoban33;
 
-import android.content.Intent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 public class Hero extends Creature {
 
@@ -16,12 +12,12 @@ public class Hero extends Creature {
     @Override
     public void takeDamage(int dmg) {
         hp -= dmg;
-        SokoView.specialEffectsLayer[position] = SokoView.SELECTED;
+        GameView.specialEffectsLayer[position] = GameView.SELECTED;
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SokoView.specialEffectsLayer[position] = SokoView.EMPTY;
+                GameView.specialEffectsLayer[position] = GameView.EMPTY;
                 gameView.invalidate();
             }
         }, 500);
@@ -29,7 +25,7 @@ public class Hero extends Creature {
         if (hp <= 0){
             dead = true;
             heroIcon = 5; // tady zmenit na ikonu lebky
-            SokoView.level[position] = heroIcon;
+            GameView.level[position] = heroIcon;
             Toast.makeText(gameView.getContext(), "You have lost the game!", Toast.LENGTH_LONG).show();
         }
     }
