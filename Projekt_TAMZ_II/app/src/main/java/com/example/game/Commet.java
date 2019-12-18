@@ -1,8 +1,6 @@
-package com.example.sokoban33;
+package com.example.game;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 
 public class Commet {
     private Bitmap[] frames;

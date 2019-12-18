@@ -1,4 +1,4 @@
-package com.example.sokoban33;
+package com.example.game;
 
 import android.app.Activity;
 import android.media.MediaPlayer;

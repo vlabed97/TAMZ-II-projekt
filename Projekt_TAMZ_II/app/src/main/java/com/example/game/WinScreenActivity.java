@@ -1,4 +1,4 @@
-package com.example.sokoban33;
+package com.example.game;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

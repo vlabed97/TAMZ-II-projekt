@@ -1,4 +1,4 @@
-package com.example.sokoban33;
+package com.example.game;
 
 public class Spell {
     public String name;

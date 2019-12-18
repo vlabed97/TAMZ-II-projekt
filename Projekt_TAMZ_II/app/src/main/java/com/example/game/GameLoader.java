@@ -1,10 +1,8 @@
-package com.example.sokoban33;
+package com.example.game;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +10,6 @@ import org.json.JSONObject;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;

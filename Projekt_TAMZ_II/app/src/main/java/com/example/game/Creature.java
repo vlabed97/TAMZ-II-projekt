@@ -1,7 +1,6 @@
-package com.example.sokoban33;
+package com.example.game;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.sokoban33;
+package com.example.game;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private int actualMapId = 0;
     private int princessPosition;
     private TextView turnText;
+    private int responseLenght = 1000;
 
 
     private void turnCounter(){
@@ -54,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private void responseToPlayer(){
         if (creatures.get(turnNumber).getClass() == Enemy.class
                 || creatures.get(turnNumber).getClass() == Minion.class){
-            turnText.setText("Enemy turn");
+            if(!creatures.get(turnNumber).dead){
+                turnText.setText("Enemy turn");
+            }
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -63,12 +66,12 @@ public class MainActivity extends AppCompatActivity {
                         Enemy enemy = (Enemy) creatures.get(turnNumber);
                         enemy.move(creatures); // do something
                         turnCounter(); // pass turn to player
-                        turnText.setText("Your turn");
+                        turnText.setText("Your turn (" + totalTurnCount + ")");
                     }
                     catch (IndexOutOfBoundsException e){}
                     catch (ClassCastException e){}
                 }
-            }, 1000);
+            }, responseLenght);
         }
     }
 
@@ -181,7 +184,9 @@ public class MainActivity extends AppCompatActivity {
             }
             i++;
         }
-        GameView.specialEffectsLayer[creatures.get(turnNumber).position] = 11;
+        if(!creatures.get(turnNumber).dead){
+            GameView.specialEffectsLayer[creatures.get(turnNumber).position] = 11;
+        }
     }
 
     private void initMove(){
@@ -189,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         responseToPlayer();
         if(enemyDead()){
             openGates();
+            responseLenght = 0;
         }
         victory();
         lose();

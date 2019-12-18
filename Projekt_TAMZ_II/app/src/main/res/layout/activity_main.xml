@@ -7,7 +7,7 @@
     android:background="@color/colorPrimaryDark"
     tools:context=".MainActivity">
 
-    <com.example.sokoban33.GameView
+    <com.example.game.GameView
         android:id="@+id/sokoView"
         android:layout_width="410dp"
         android:layout_height="410dp"
@@ -63,6 +63,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@drawable/spell_slot_selected"
+        android:fontFamily="@font/allerta"
         android:onClick="selectedSpell_1"
         android:text="Spell 1"
         app:layout_constraintBottom_toTopOf="@+id/buttonLeft"
@@ -73,6 +74,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@drawable/spell_slot"
+        android:fontFamily="@font/allerta"
         android:onClick="selectedSpell_2"
         android:text="Spell 2"
         app:layout_constraintBottom_toTopOf="@+id/buttonRight"

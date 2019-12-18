@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.sokoban33">
+    package="com.example.game">
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label=""
+        android:icon="@drawable/carotty"
+        android:label="TAMZ II Game"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoseActivity"></activity>
-        <activity android:name=".ChooseLevelActivity" />
-        <activity android:name=".HeroActivity" />
-        <activity android:name=".ScoreBoardActivity" />
-        <activity android:name=".WinScreenActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".MenuActivity">
+        <activity android:name="com.example.game.LoseActivity"></activity>
+        <activity android:name="com.example.game.ChooseLevelActivity" />
+        <activity android:name="com.example.game.HeroActivity" />
+        <activity android:name="com.example.game.ScoreBoardActivity" />
+        <activity android:name="com.example.game.WinScreenActivity" />
+        <activity android:name="com.example.game.MainActivity" />
+        <activity android:name="com.example.game.MenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
