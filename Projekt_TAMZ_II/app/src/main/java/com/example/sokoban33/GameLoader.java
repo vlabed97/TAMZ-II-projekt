@@ -117,7 +117,6 @@ public class GameLoader {
         if(objectId == 99){
             SharedPreferences pref = activity.getApplicationContext().getSharedPreferences("HeroPref", 0);
             String heroClass = pref.getString("class", null);
-            Toast.makeText(activity.getBaseContext(), heroClass, Toast.LENGTH_LONG).show();
             if(heroClass.equals("warrior")){
                 return 6;
             }

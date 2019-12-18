@@ -38,6 +38,8 @@ public class GameView extends View{
     final static int SELECTED = 8;
     final static int EMPTY = 9;
     final static int CAROTTY = 10;
+    final static int FLOOR = 12;
+    final static int WALL_2 = 13;
 
     public static int level[] = {
             1,1,1,1,1,1,1,1,1,1,
@@ -49,7 +51,7 @@ public class GameView extends View{
             1,0,0,0,0,2,1,0,0,1,
             1,0,0,4,0,0,0,0,0,1,
             1,0,0,0,0,0,6,0,0,1,
-            1,1,1,1,1,1,1,1,1,1
+            1,1,1,1,1,1,1,1,1,110
     };
 
     public static int specialEffectsLayer[] = {
@@ -86,17 +88,10 @@ public class GameView extends View{
                 }
             }
         }).start();
-
-        /*
-        commet.actualX = 10;
-        commet.actualY = 10;
-        commet.targetX = 200;
-        commet.targetY = 250;
-        commet.launch();*/
     }
 
     void init(Context context) {
-        bmp = new Bitmap[12];
+        bmp = new Bitmap[15];
         bmp[0] = BitmapFactory.decodeResource(getResources(), R.drawable.grass_1);
         bmp[1] = BitmapFactory.decodeResource(getResources(), R.drawable.grass_3);
         bmp[2] = BitmapFactory.decodeResource(getResources(), R.drawable.box);
@@ -109,6 +104,9 @@ public class GameView extends View{
         bmp[9] = BitmapFactory.decodeResource(getResources(), R.drawable.empty_alpha);
         bmp[10] = BitmapFactory.decodeResource(getResources(), R.drawable.carotty);
         bmp[11] = BitmapFactory.decodeResource(getResources(), R.drawable.selection);
+        bmp[12] = BitmapFactory.decodeResource(getResources(), R.drawable.floor);
+        bmp[13] = BitmapFactory.decodeResource(getResources(), R.drawable.wall_2);
+        bmp[14] = BitmapFactory.decodeResource(getResources(), R.drawable.rip);
         Bitmap[] commetBitmap = new Bitmap[3];
         commetBitmap[0] = BitmapFactory.decodeResource(getResources(), R.drawable.commet_0);
         commetBitmap[1] = BitmapFactory.decodeResource(getResources(), R.drawable.commet_1);

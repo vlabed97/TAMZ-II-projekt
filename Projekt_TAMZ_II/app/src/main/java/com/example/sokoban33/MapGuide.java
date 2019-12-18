@@ -11,16 +11,20 @@ public class MapGuide {
     public static boolean isFree(String site, int position){
         switch (site){
             case "left":
-                if (GameView.level[position - 1] == GameView.GRASS) return true;
+                if (GameView.level[position - 1] == GameView.GRASS
+                        || GameView.level[position - 1] == GameView.FLOOR) return true;
                 else return false;
             case "right":
-                if (GameView.level[position + 1] == GameView.GRASS) return true;
+                if (GameView.level[position + 1] == GameView.GRASS
+                        || GameView.level[position + 1] == GameView.FLOOR) return true;
                 else return false;
             case "up":
-                if (GameView.level[position - GameView.lx] == GameView.GRASS) return true;
+                if (GameView.level[position - GameView.lx] == GameView.GRASS
+                        || GameView.level[position - GameView.lx] == GameView.FLOOR) return true;
                 else return false;
             case "down":
-                if (GameView.level[position + GameView.lx] == GameView.GRASS) return true;
+                if (GameView.level[position + GameView.lx] == GameView.GRASS
+                        || GameView.level[position + GameView.lx] == GameView.FLOOR) return true;
                 else return false;
         }
         return false;

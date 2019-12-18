@@ -18,15 +18,14 @@ public class Hero extends Creature {
             @Override
             public void run() {
                 GameView.specialEffectsLayer[position] = GameView.EMPTY;
-                // gameView.invalidate();
             }
         }, 500);
 
         if (hp <= 0){
             dead = true;
-            heroIcon = 5; // tady zmenit na ikonu lebky
-            GameView.level[position] = heroIcon;
-            Toast.makeText(gameView.getContext(), "You have lost the game!", Toast.LENGTH_LONG).show();
+            //heroIcon = 5; // tady zmenit na ikonu lebky
+            //GameView.level[position] = heroIcon;
+            //Toast.makeText(gameView.getContext(), "You have lost the game!", Toast.LENGTH_LONG).show();
         }
     }
 }

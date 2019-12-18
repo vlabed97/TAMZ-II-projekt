@@ -26,7 +26,6 @@ public class ChooseLevelActivity extends AppCompatActivity {
         listViewScore.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), "Item: " + i + " clicked", Toast.LENGTH_LONG).show();
                 startGame(i);
             }
         });

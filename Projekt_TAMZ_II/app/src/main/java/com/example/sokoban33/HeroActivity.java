@@ -39,10 +39,12 @@ public class HeroActivity extends AppCompatActivity {
 
     public void clickWarrior(View view){
         chosenClass = "warrior";
+        textViewClass.setText(chosenClass);
     }
 
     public void  clickMage(View view){
         chosenClass = "mage";
+        textViewClass.setText(chosenClass);
     }
 
     public void clickSubmit(View view){

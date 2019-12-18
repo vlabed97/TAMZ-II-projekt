@@ -6,14 +6,14 @@ public class Mage extends Hero {
     private final int MAX_HP = 80;
     private int hp = 80;
 
-    private final int MAX_MANA = 100;
+    public final int MAX_MANA = 100;
     public int mana = 100;
 
-    private final int FIREBALL_COST = 10;
+    public final int FIREBALL_COST = 30;
 
     public Mage(int heroIcon, String name, View gameView){
         super(heroIcon, name, gameView);
-        spells.add(new Spell("Comet", R.drawable.comet));
+        spells.add(new Spell("Comet\n-30 MP", R.drawable.comet));
         spells.add(new Spell("Stab", R.drawable.comet));
     }
 
@@ -28,8 +28,12 @@ public class Mage extends Hero {
         if(creature.position == this.position - 1
                 || creature.position == this.position + 1
                 || creature.position == this.position - GameView.lx
-                || creature.position == this.position + GameView.lx){
-            creature.takeDamage(8);
+                || creature.position == this.position + GameView.lx
+                || creature.position == this.position - GameView.lx - 1
+                || creature.position == this.position - GameView.lx + 1
+                || creature.position == this.position + GameView.lx - 1
+                || creature.position == this.position + GameView.lx + 1){
+            creature.takeDamage(15);
         }
     }
 }

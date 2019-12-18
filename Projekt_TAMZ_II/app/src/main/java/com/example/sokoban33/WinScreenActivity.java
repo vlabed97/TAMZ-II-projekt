@@ -7,21 +7,33 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class WinScreenActivity extends AppCompatActivity {
 
     public TextView scoreTextView;
+    public int score;
+    public int mapId;
+    private String mapName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_win_screen);
         scoreTextView = findViewById(R.id.textViewScore);
+        Intent intent = getIntent();
+        score = intent.getIntExtra("score", 0);
+        mapId = intent.getIntExtra("map_id", 0);
+        scoreTextView.setText(score + "");
+        GameLoader gameLoader = new GameLoader(this);
+        ArrayList<String> maps = gameLoader.getAllMaps();
+        mapName = maps.get(mapId);
     }
 
     public void saveScoreButton(View view){
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("HeroPref", 0);
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
-        databaseHelper.insertScore("sharedPreferencesLvl", pref.getString("name", null), 100);
+        databaseHelper.insertScore(mapName, pref.getString("name", null), score);
         Intent intent = new Intent(this, MenuActivity.class);
         startActivity(intent);
     }

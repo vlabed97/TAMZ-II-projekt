@@ -61,7 +61,7 @@ public class Creature {
 
         if (hp <= 0){
             dead = true;
-            heroIcon = 5; // tady zmenit na ikonu lebky
+            heroIcon = 14; // tady zmenit na ikonu lebky
             GameView.level[position] = heroIcon;
         }
     }
@@ -74,39 +74,47 @@ public class Creature {
         return position;
     }
 
-    public void moveLeft(){
+    public boolean moveLeft(){
         if (MapGuide.isFree(MapGuide.LEFT, position)) {
             GameView.level[position] = GameView.GRASS;
             position--;
             positionX = (this.position%GameView.lx) * (gameView.getWidth()/GameView.lx);
             GameView.level[position] = heroIcon;
+            return true;
         }
+        return false;
     }
 
-    public void moveRight(){
+    public boolean moveRight(){
         if (MapGuide.isFree(MapGuide.RIGHT, position)) {
             GameView.level[position] = GameView.GRASS;
             position++;
             positionX = (this.position%GameView.lx) * (gameView.getWidth()/GameView.lx);
             GameView.level[position] = heroIcon;
+            return true;
         }
+        return false;
     }
 
-    public void moveUp(){
+    public boolean moveUp(){
         if (MapGuide.isFree(MapGuide.UP, position)) {
             GameView.level[position] = GameView.GRASS;
             position -= GameView.lx;
             positionY = (this.position/GameView.lx) * (gameView.getWidth()/GameView.lx);
             GameView.level[position] = heroIcon;
+            return true;
         }
+        return false;
     }
 
-    public void moveDown(){
+    public boolean moveDown(){
         if (MapGuide.isFree(MapGuide.DOWN, position)) {
             GameView.level[position] = GameView.GRASS;
             position += GameView.lx;
             positionY = (this.position/GameView.lx) * (gameView.getWidth()/GameView.lx);
             GameView.level[position] = heroIcon;
+            return true;
         }
+        return false;
     }
 }

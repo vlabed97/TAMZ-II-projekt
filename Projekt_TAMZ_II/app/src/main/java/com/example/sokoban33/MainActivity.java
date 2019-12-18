@@ -19,29 +19,42 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Creature> creatures;
     private GameView gameView;
     private int turnNumber;
+    private int totalTurnCount = 0;
+    private int score = 1000;
     private int selectedSpell;
     private Button spell_1_button;
     private Button spell_2_button;
     private GameLoader gameLoader;
     private int actualMapId = 0;
+    private int princessPosition;
+    private TextView turnText;
 
 
     private void turnCounter(){
-        // gameView.invalidate(); // REDRAWS SCENE
         turnNumber++;
         if (turnNumber >= creatures.size()){
             turnNumber = 0;
+            totalTurnCount++;
         }
         selectCreature();
-        TextView turnText = findViewById(R.id.textTurn);
-        turnText.setText(creatures.get(turnNumber).name + " " + creatures.get(turnNumber).getHp() + "HP");
         initSpells();
+    }
+
+    private int getPrincessPosition(){
+        int i = 0;
+        for(int objectId: GameView.level){
+            if(objectId == GameView.CAROTTY){
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
 
     private void responseToPlayer(){
         if (creatures.get(turnNumber).getClass() == Enemy.class
                 || creatures.get(turnNumber).getClass() == Minion.class){
-            Log.i("mojLog", "MINIONS TURN");
+            turnText.setText("Enemy turn");
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -50,28 +63,12 @@ public class MainActivity extends AppCompatActivity {
                         Enemy enemy = (Enemy) creatures.get(turnNumber);
                         enemy.move(creatures); // do something
                         turnCounter(); // pass turn to player
+                        turnText.setText("Your turn");
                     }
-                    catch (IndexOutOfBoundsException e){
-                        Log.i("mojLog", "MINIONS is dead");
-                    }
-                    catch (ClassCastException e){
-                        Log.i("mojLog", "Unknown error.. to be solved");
-                    }
+                    catch (IndexOutOfBoundsException e){}
+                    catch (ClassCastException e){}
                 }
-            }, 1500);
-            Log.i("mojLog", "MINIONS TURN END");
-        }
-    }
-
-    private void removeDeadCreatures(){
-        Creature creatureToRemove = null;
-        for(Creature creature: creatures){
-            if (creature.dead){
-                creatureToRemove = creature;
-            }
-        }
-        if (creatureToRemove != null){
-            creatures.remove(creatureToRemove);
+            }, 1000);
         }
     }
 
@@ -101,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupNewGame(){
         GameView.level = gameLoader.getMap(this.actualMapId);
+        princessPosition = getPrincessPosition();
         selectedSpell = 0;
         turnNumber = 0;
         creatures = new ArrayList<>();
@@ -117,27 +115,62 @@ public class MainActivity extends AppCompatActivity {
         initSpells();
     }
 
-    private void victory(){
-        boolean isWin = true;
+    private void lose(){
         for(Creature creature: creatures){
-            if(creature.name == "Minion"){
-                isWin = false;
-            }
-        }
-        if(isWin){
-            actualMapId++;
-            if(actualMapId == 3){
-                Intent intent = new Intent(this, WinScreenActivity.class);
-                startActivity(intent);
-            }
-            else{
-                try{
-                    GameView.level = gameLoader.getMap(this.actualMapId);
-                    setupNewGame();
+            if(creature.getClass() == Warrior.class || creature.getClass() == Mage.class){
+                if(creature.dead){
+                    Intent intent = new Intent(this, LoseActivity.class);
+                    startActivity(intent);
                 }
-                catch(Exception e){}
             }
         }
+    }
+
+    private void victory(){
+        if (GameView.HERO == GameView.level[princessPosition - 1]
+                || GameView.HERO == GameView.level[princessPosition + 1]
+                || GameView.HERO == GameView.level[princessPosition - GameView.lx]
+                || GameView.HERO == GameView.level[princessPosition + GameView.lx]
+                || GameView.HERO == GameView.level[princessPosition - GameView.lx - 1]
+                || GameView.HERO == GameView.level[princessPosition - GameView.lx + 1]
+                || GameView.HERO == GameView.level[princessPosition + GameView.lx - 1]
+                || GameView.HERO == GameView.level[princessPosition + GameView.lx + 1]
+                || GameView.ENEMY == GameView.level[princessPosition - 1]
+                || GameView.ENEMY == GameView.level[princessPosition + 1]
+                || GameView.ENEMY == GameView.level[princessPosition - GameView.lx]
+                || GameView.ENEMY == GameView.level[princessPosition + GameView.lx]
+                || GameView.ENEMY == GameView.level[princessPosition - GameView.lx - 1]
+                || GameView.ENEMY == GameView.level[princessPosition - GameView.lx + 1]
+                || GameView.ENEMY == GameView.level[princessPosition + GameView.lx - 1]
+                || GameView.ENEMY == GameView.level[princessPosition + GameView.lx + 1]){
+            Intent intent = new Intent(this, WinScreenActivity.class);
+            int totalScore = score - totalTurnCount*25;
+            if(totalScore < 200){
+                totalScore = 200;
+            }
+            intent.putExtra("score", totalScore);
+            intent.putExtra("map_id", actualMapId);
+            startActivity(intent);
+        }
+    }
+
+    private void openGates(){
+        int i = 0;
+        for(int objectId: GameView.level){
+            if(objectId == 2){
+                GameView.level[i] = GameView.GRASS;
+            }
+            i++;
+        }
+    }
+
+    private boolean enemyDead(){
+        for(Creature creature: creatures){
+            if(creature.getClass() == Minion.class && creature.dead){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void selectCreature(){
@@ -154,8 +187,11 @@ public class MainActivity extends AppCompatActivity {
     private void initMove(){
         turnCounter();
         responseToPlayer();
-        removeDeadCreatures();
+        if(enemyDead()){
+            openGates();
+        }
         victory();
+        lose();
     }
 
     @Override
@@ -164,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+        turnText = findViewById(R.id.textTurn);
 
         Intent intent = getIntent();
         actualMapId = intent.getIntExtra("game_id", 0);
@@ -184,38 +222,45 @@ public class MainActivity extends AppCompatActivity {
                     MediaPlayer swing = MediaPlayer.create(v.getContext(), R.raw.swing);
                     if (creature != null){
                         Creature caster = creatures.get(turnNumber);
-                        if (caster.spells.get(selectedSpell).name == "Comet"){
+                        if (caster.spells.get(selectedSpell).name == "Comet\n-30 MP"){
                             Mage mage = (Mage)caster;
-                            GameView gameView = findViewById(R.id.sokoView);
-                            Log.i("mojLog", String.valueOf(gameView.getWidth()));
-                            GameView.commet.actualX = (mage.position%GameView.lx) * (gameView.getWidth()/GameView.lx);
-                            GameView.commet.actualY = (mage.position/GameView.lx) * (gameView.getWidth()/GameView.lx);
-                            GameView.commet.targetX = x - 30;
-                            GameView.commet.targetY = y - 30;
-                            GameView.commet.launch();
-                            mage.comet(creature);
-                            swing.start();
+                            if(mage.mana >= mage.FIREBALL_COST){
+                                GameView gameView = findViewById(R.id.sokoView);
+                                Log.i("mojLog", String.valueOf(gameView.getWidth()));
+                                GameView.commet.actualX = (mage.position%GameView.lx) * (gameView.getWidth()/GameView.lx);
+                                GameView.commet.actualY = (mage.position/GameView.lx) * (gameView.getWidth()/GameView.lx);
+                                GameView.commet.targetX = x - 30;
+                                GameView.commet.targetY = y - 30;
+                                GameView.commet.launch();
+                                mage.comet(creature);
+                                swing.start();
+                                initMove();
+                            }
                         }
                         else if (caster.spells.get(selectedSpell).name == "Stab"){
                             Mage mage = (Mage)caster;
                             mage.stab(creature);
                             swing.start();
+                            initMove();
                         }
                         else if (caster.spells.get(selectedSpell).name == "Slash"){
                             Warrior warrior = (Warrior) caster;
                             warrior.slash(creature);
                             swing.start();
+                            initMove();
                         }
-                        else if (caster.spells.get(selectedSpell).name == "Heroic strike"){
+                        else if (caster.spells.get(selectedSpell).name == "Heroic strike\n-20 PW"){
                             Warrior warrior = (Warrior) caster;
-                            warrior.heroicStrike(creature);
-                            swing.start();
+                            if(warrior.rage >= warrior.HEROICSTRIKE_COST){
+                                warrior.heroicStrike(creature);
+                                swing.start();
+                                initMove();
+                            }
+                        }
+                        else{
+                            initMove();
                         }
                     }
-                    else{
-                        click.start();
-                    }
-                    initMove();
                 }
                 return true;
             }
@@ -245,10 +290,11 @@ public class MainActivity extends AppCompatActivity {
                 || creatures.get(turnNumber).getClass() == Mage.class
                 || creatures.get(turnNumber).getClass() == Warrior.class){
             Hero hero = (Hero) creatures.get(turnNumber);
-            hero.moveLeft();
-            initMove();
-            MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
-            step.start();
+            if(hero.moveLeft()){
+                initMove();
+                MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
+                step.start();
+            }
         }
     }
 
@@ -257,10 +303,11 @@ public class MainActivity extends AppCompatActivity {
                 || creatures.get(turnNumber).getClass() == Mage.class
                 || creatures.get(turnNumber).getClass() == Warrior.class) {
             Hero hero = (Hero)creatures.get(turnNumber);
-            hero.moveRight();
-            initMove();
-            MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
-            step.start();
+            if(hero.moveRight()){
+                initMove();
+                MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
+                step.start();
+            }
         }
     }
 
@@ -269,10 +316,11 @@ public class MainActivity extends AppCompatActivity {
                 || creatures.get(turnNumber).getClass() == Mage.class
                 || creatures.get(turnNumber).getClass() == Warrior.class) {
             Hero hero = (Hero)creatures.get(turnNumber);
-            hero.moveUp();
-            initMove();
-            MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
-            step.start();
+            if(hero.moveUp()){
+                initMove();
+                MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
+                step.start();
+            }
         }
     }
 
@@ -281,10 +329,11 @@ public class MainActivity extends AppCompatActivity {
                 || creatures.get(turnNumber).getClass() == Mage.class
                 || creatures.get(turnNumber).getClass() == Warrior.class) {
             Hero hero = (Hero)creatures.get(turnNumber);
-            hero.moveDown();
-            initMove();
-            MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
-            step.start();
+            if(hero.moveDown()){
+                initMove();
+                MediaPlayer step = MediaPlayer.create(view.getContext(), R.raw.step);
+                step.start();
+            }
         }
     }
 }
